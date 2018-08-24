@@ -1,0 +1,181 @@
+<!DOCTYPE>
+<html>
+
+<head>
+  <title>Raffler</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/motion.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Poor+Story" rel="stylesheet">
+
+  <style type="text/css">
+    body {
+      background-image: linear-gradient(white, lightblue, lightgreen);
+      font-family: "Poor Story";
+    }
+
+    h1 {
+      padding: 20px;
+      text-align: center;
+      /* font-family: "Dosis"; */
+      font-size: 80px;
+      font-weight: bolder;
+    }
+
+    h5 {
+      padding: 20px;
+      text-align: center;
+    }
+
+    td,
+    th,
+    tr {
+      text-align: center;
+      vertical-align: middle;
+
+    }
+
+    .congrats {
+      width: 100%;
+      padding: 20px 10px;
+      text-align: center;
+      margin: 0 auto;
+      left: 0;
+      right: 0;
+    }
+
+    .container {
+      text-align: center;
+      border-radius: 20px;
+      background-color: white;
+      box-shadow: 3px 3px 3px gray;
+      margin: 30px auto;
+      padding-bottom: 20px;
+      padding-top: 20px;
+    }
+
+    #id-list {
+      width: 90%;
+      text-align: center;
+      margin: 10px auto;
+    }
+
+    #add-input {
+      width: 100%;
+    }
+
+    #add-button {
+      height: 100%;
+      width: 100%;
+    }
+
+    #del-button {
+      height: 100%;
+      width: 100%;
+    }
+
+    #startConfetti {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <h1 class="fanfare animation">Raffler</h1>
+  <div class="container fade-in animation">
+    <h5 id="percentage"></h5>
+    <table id="id-list" class="table">
+      <tr>
+        <th>
+          <h3 id="result" ></h3>
+        </th>
+        <th>
+          <input type="button" class="btn btn-sm btn-primary" id="startConfetti" value="추첨!!">
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <textarea id="add-input" class="form-control" rows="3" placeholder="추첨을 원하는 ID를 Enter로 구분하여 입력해주세요."></textarea>
+        </th>
+        <th>
+          <input id="add-button" class="btn btn-sm btn-success" type="button" value="추가">
+        </th>
+      </tr>
+
+    </table>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="assets/js/jquery.confetti.js"></script>
+  <script type="text/javascript">
+    var idList = [];
+
+    // $('document').ready(function(){
+    //   console.log("fanfare");
+    //   init();
+    // });
+
+    $("#add-button").on('click', function () {
+      addId();
+    });
+
+    $(document).on('click', '#del-button', function () {
+      var now = idList.indexOf($(this).parent().prev().text());
+      idList.splice(now, 1);
+      console.log(idList);
+      $(this).parent().parent().remove();
+      if (idList.length == 0) $('#percentage').text("");
+      else calulatePercentage();
+
+    });
+
+    $('#startConfetti').on('click', startConfetti);
+
+    function addId() {
+      let input = $('#add-input').val();
+      if (input.trim() == "") {
+        alert("id를 입력하세용!");
+        return;
+      }
+      let list = input.split("\n");
+      list.forEach(function (data) {
+        if (data.length != 0) {
+          let tdTag = '<tr><td>' + data + '</td><td><input id="del-button" class="btn btn-sm btn-danger" value="삭제" type="button"></td></tr>';
+          $('#id-list').append(tdTag);
+          idList.push(data);
+        }
+      });
+      console.log(idList);
+      $('#add-input').val('');
+      calulatePercentage();
+    }
+
+    function startConfetti() {
+      if (idList.length == 0) {
+        $('#result').css("color", "red");
+        $('#result').css("font-size", "16px");
+        $('#result').text("id를 먼저 입력하세요.");
+        return;
+      }
+
+      let randomNumber = Math.ceil(Math.random() * (idList.length) - 1);
+      console.log(randomNumber + " " + idList[randomNumber]);
+      $('#result').css("color", "blue");
+      $('#result').css("font-size", "32px");
+      $('#result').text("축하합니다. " + idList[randomNumber] + "님!");
+
+    }
+    function calulatePercentage() {
+      $('#percentage').text("당신의 당첨 확률은 " + Math.round(1 / idList.length * 100) + "%");
+    }
+
+
+
+
+  </script>
+</body>
+
+</html>
